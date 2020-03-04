@@ -1,3 +1,5 @@
+from os import path
+import sys  # these 2 are required to find the correct paths for pyinstaller
 import tkinter as tk
 from tkinter import ttk
 from frames import Snake
@@ -31,6 +33,12 @@ class Board(tk.Tk):
             foreground=LIGHT_TEXT,
             font='Arial 30'
         )
+
+        # sys will tell the system where this bundle is
+        # the 3rd element is for, when it failed to find the bundle, there's a default as an alternative
+        # path.abspath: absolute path
+        # __file__: the current file that we're running
+        self.bundle_dir = getattr(sys, "_MEIPASS", path.abspath(path.dirname(__file__)))
 
         self.message = tk.StringVar(value='This is a snake game.\nPress ENTER to start.')
 

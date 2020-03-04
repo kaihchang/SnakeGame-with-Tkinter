@@ -1,3 +1,5 @@
+from os import path
+import sys  # these 2 are required to find the correct paths for pyinstaller
 import tkinter as tk
 from random import randint
 from PIL import Image, ImageTk
@@ -24,7 +26,7 @@ class Snake(tk.Canvas):
 
         self.score = 0
 
-        self.load_assets()
+        self.load_assets(container)
         self.create_board()
         self.create_objects()
 
@@ -35,15 +37,19 @@ class Snake(tk.Canvas):
         self.after(game_speed, self.perform_actions)
 
     # load images locally, but won't place it yet
-    def load_assets(self):
+    def load_assets(self, container):
         try:
-            self.snake_body_image = Image.open("./assets/snake.png")
+            # 'path.join' is a cross-platform way of joining paths
+            path_to_snake = path.join(container.bundle_dir, 'assets', 'snake.png')
+
+            self.snake_body_image = Image.open(path_to_snake)
             self.snake_body = ImageTk.PhotoImage(self.snake_body_image)
 
-            self.food_image = Image.open("./assets/food.png")
+            path_to_food = path.join(container.bundle_dir, 'assets', 'food.png')
+            self.food_image = Image.open(path_to_food)
             self.food = ImageTk.PhotoImage(self.food_image)
         except IOError as error:  # if the file doesn't exist
-            root.destroy()  # close up the whole root window
+            self.container.destroy()  # close up the whole root window
             raise  # print out the error
 
     # place the assets (images) into the window
@@ -134,7 +140,7 @@ class Snake(tk.Canvas):
             if self.score % 5 == 0:
                 global moves_per_second
                 global game_speed
-                moves_per_second += 1
+                moves_per_second += 3
                 game_speed = 1000 // moves_per_second
 
             self.create_image(
