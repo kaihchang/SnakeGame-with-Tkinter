@@ -1,0 +1,4 @@
+([('app',
+   '/Users/kaihsiangchang/Desktop/Python 3 Practices/Tkinter '
+   'Practice/SnakeGame/dist/app',
+   'EXECUTABLE')],)
