@@ -7,9 +7,6 @@ from PIL import Image, ImageTk
 # GLOBAL CONSTANTS
 MOVE_INCREMENT = 20
 
-moves_per_second = 15  # this will not be a constant, since we'll increase the speed later
-game_speed = 1000 // moves_per_second  # 66 moves initially
-
 
 class Snake(tk.Canvas):
     def __init__(self, container, *args, **kwargs):
@@ -24,7 +21,11 @@ class Snake(tk.Canvas):
         self.food_position = self.set_new_food_position()
         self.direction = "Right"  # initial direction, move_snake() will handle direction control
 
+        # reset score and game speed
         self.score = 0
+
+        self.moves_per_second = 15
+        self.game_speed = 1000 // self.moves_per_second  # 66 moves initially
 
         self.load_assets(container)
         self.create_board()
@@ -34,7 +35,7 @@ class Snake(tk.Canvas):
 
         self.pack()
 
-        self.after(game_speed, self.perform_actions)
+        self.after(self.game_speed, self.perform_actions)
 
     # load images locally, but won't place it yet
     def load_assets(self, container):
@@ -56,7 +57,7 @@ class Snake(tk.Canvas):
     def create_board(self):
         self.create_text(
             80, 12,
-            text=f"Score: {self.score}, Speed: {moves_per_second}",
+            text=f"Score: {self.score}, Speed: {self.moves_per_second}",
             tag="score", fill="#fff",
             font=('Arial', 15)
         )
@@ -126,7 +127,7 @@ class Snake(tk.Canvas):
         self.check_food_collision()
         self.move_snake()
 
-        self.after(game_speed, self.perform_actions)
+        self.after(self.game_speed, self.perform_actions)
 
     def check_food_collision(self):
         if self.snake_positions[0] == self.food_position:
@@ -138,10 +139,8 @@ class Snake(tk.Canvas):
 
             # increase speed when every 10 scores
             if self.score % 5 == 0:
-                global moves_per_second
-                global game_speed
-                moves_per_second += 3
-                game_speed = 1000 // moves_per_second
+                self.moves_per_second += 3
+                self.game_speed = 1000 // self.moves_per_second
 
             self.create_image(
                 *self.snake_positions[-1], image=self.snake_body, tag="snake"
@@ -152,7 +151,7 @@ class Snake(tk.Canvas):
             new_score = self.find_withtag("score")
             self.itemconfigure(
                 new_score,
-                text=f"Score: {self.score}, Speed: {moves_per_second}",
+                text=f"Score: {self.score}, Speed: {self.moves_per_second}",
                 tag="score"
             )
 
@@ -168,5 +167,6 @@ class Snake(tk.Canvas):
                 pass
 
     def end_game(self, container, score):
-        # self.delete(tk.ALL)
+        self.delete(tk.ALL)
         container.ask_restart(score)
+
