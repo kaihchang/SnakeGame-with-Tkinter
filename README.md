@@ -7,3 +7,4 @@
 ><img src='https://imgur.com/QKiavH9.jpg'>
 
 >It's just a simple snake-eat-fruit thingy game.
+>To test the app, go to 'dist' folder and check out the 1st file.
